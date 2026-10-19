@@ -56,6 +56,7 @@ def is_facebook(url):
 
 
 def ydl_opts(extra=None):
+    app.logger.warning("YT-DLP VERSION: %s", yt_dlp.version.__version__)
     opts = {
         "quiet": True,
         "no_warnings": True,
