@@ -62,6 +62,10 @@ def ydl_opts(extra=None):
         "noplaylist": True,
         "socket_timeout": 30,
     }
+
+    app.logger.warning("DENO PATH: %s", shutil.which("deno"))
+    app.logger.warning("NODE PATH: %s", shutil.which("node"))
+
     if COOKIES_FILE:
         opts["cookiefile"] = COOKIES_FILE
     elif COOKIES_BROWSER:
