@@ -4,18 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#eef2f5">
-  <meta name="description" content="Use Lightclip to prepare smaller MP4 video files, choose H.264 or H.265, and select available video quality. Try the free online video tool.">
-  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="description" content="Use Lightclip free online to check supported video links, choose available video quality, and prepare MP4 files with H.264 or H.265 options. Results depend on the source link.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <!-- Add a canonical URL only after confirming the final public domain. -->
+  <!-- <link rel="canonical" href="https://YOUR-DOMAIN.example/"> -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Lightclip — Online Video Downloader & Compressor">
-  <meta property="og:description" content="Prepare smaller MP4 files with quality and codec options. Paste a supported video link to get started.">
+  <meta property="og:description" content="Check supported video links, choose available quality, and prepare MP4 files with Lightclip. Compatibility depends on the source link.">
+  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Lightclip — Free Online Video Tool">
+  <meta name="twitter:description" content="Check supported video links and prepare MP4 files with available quality and codec options.">
   <title>Lightclip — Online Video Downloader &amp; Compressor</title>
   <link rel="icon" href="/favicon.ico" sizes="any">
   <style>
     :root{--bg:#eef2f5;--ink:#10202c;--mute:#5b6b78;--card:#fff;--line:#d3dce3;--accent:#0b6bff;--err:#c0392b}
     @media(prefers-color-scheme:dark){:root{--bg:#0f1a22;--ink:#e8eff4;--mute:#93a4b1;--card:#16242e;--line:#273946;--accent:#4d9bff;--err:#ff7b6b}}
     *{box-sizing:border-box}
+    .skip-link{position:absolute;left:-9999px;top:8px;z-index:1000;padding:10px 14px;background:var(--card);color:var(--ink);border:2px solid var(--accent);border-radius:8px}
+    .skip-link:focus{left:8px}
     html{scroll-behavior:smooth;scroll-padding-top:80px}
     body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
     #root{min-height:100vh;display:flex;flex-direction:column}
@@ -33,6 +40,14 @@
     .eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mute);font-size:.82rem;font-weight:650}
     .hero-points{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 22px;color:var(--mute);font-size:.9rem}
     .hero-points span:before{content:"✓";color:var(--accent);font-weight:800;margin-right:6px}
+    .url-tools{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .utility-btn{min-height:40px;padding:8px 12px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;font-size:.9rem}
+    .platform-panel{margin-top:24px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+    .platform-panel h2{font-size:1.05rem;margin:0 0 6px}
+    .platform-panel p{margin:0;color:var(--mute);font-size:.9rem}
+    .platform-list{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .platform-chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;font-size:.85rem;font-weight:650}
+    .notice{font-size:.82rem!important}
     .hint{margin:10px 2px 0;color:var(--mute);font-size:.82rem}
     .cta-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700}
     .feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -40,6 +55,31 @@
     .feature h3{font-size:1rem;margin:0 0 6px}
     .feature p{margin:0;color:var(--mute);font-size:.9rem}
     .section-copy{color:var(--mute);max-width:68ch}
+
+    .review-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 18px;color:var(--mute)}
+    .review-stars{color:#e5a000;letter-spacing:2px;font-size:1.1rem;white-space:nowrap}
+    .review-list{display:grid;gap:12px;margin-top:18px}
+    .review-item{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+    .review-item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+    .review-author{font-weight:750}
+    .review-date{font-size:.8rem;color:var(--mute)}
+    .review-item p{margin:10px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+    .review-empty,.review-status{color:var(--mute);font-size:.9rem}
+    .rating-picker{display:flex;gap:5px;align-items:center}
+    .rating-picker button{min-height:40px;padding:4px 7px;background:transparent;color:#aab3bb;font-size:1.65rem;line-height:1;border:0}
+    .rating-picker button.selected{color:#e5a000}
+    .rating-picker button:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+    .feedback-card{margin-top:22px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+    .feedback-card h2{margin-bottom:6px}
+    .feedback-card .section-copy{margin:0 0 16px}
+    .feedback-form{display:grid;gap:12px}
+    .feedback-form label{display:grid;gap:6px;font-weight:650;font-size:.93rem}
+    .feedback-form select,.feedback-form textarea,.feedback-form input[type="email"]{width:100%;min-height:44px;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:inherit}
+    .feedback-form textarea{min-height:120px;resize:vertical}
+    .feedback-form button{min-height:46px;border:0;border-radius:9px;padding:12px 16px;background:var(--accent);color:white;font-weight:750;cursor:pointer}
+    .feedback-form button:disabled{opacity:.65;cursor:wait}
+    .feedback-note{margin:0;color:var(--mute);font-size:.82rem}
+    .feedback-status{margin:0;font-size:.92rem}
     @media(max-width:520px){.feature-grid{grid-template-columns:1fr}}
     .row{display:flex;gap:8px}
     input[type=url]{flex:1;min-width:0;padding:16px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
@@ -83,31 +123,56 @@
     .foot-in a{color:var(--mute);text-decoration:none;margin-right:16px}
     .foot-in a:hover{color:var(--accent)}
     .foot-in p{margin:0;max-width:52ch}
+
+    .feedback-card{margin-top:22px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+    .feedback-card h2{margin-bottom:6px}
+    .feedback-card .section-copy{margin:0 0 16px}
+    .feedback-form{display:grid;gap:12px}
+    .feedback-form label{display:grid;gap:6px;font-weight:650;font-size:.93rem}
+    .feedback-form select,.feedback-form textarea,.feedback-form input[type="email"]{width:100%;min-height:44px;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:inherit}
+    .feedback-form textarea{min-height:120px;resize:vertical}
+    .feedback-form button{min-height:46px;border:0;border-radius:9px;padding:12px 16px;background:var(--accent);color:white;font-weight:750;cursor:pointer}
+    .feedback-form button:disabled{opacity:.65;cursor:wait}
+    .feedback-note{margin:0;color:var(--mute);font-size:.82rem}
+    .feedback-status{margin:0;font-size:.92rem}
     @media(max-width:520px){.links{gap:14px}.links a{font-size:.85rem}.row{flex-direction:column}.row button{min-height:48px}.actions{flex-direction:column}}
   </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <div id="root">
   <header class="nav">
     <div class="nav-in">
       <a class="brand" href="#home"><span class="logo" aria-hidden="true">▶</span>Lightclip</a>
       <nav class="links" aria-label="Main navigation">
-        <a href="#home">Home</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+        <a href="#home">Home</a><a href="#how">How it works</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a>
       </nav>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section id="home">
       <p class="eyebrow">Free online video tool · MP4 · H.264 / H.265</p>
-      <h1>Download and compress videos with Lightclip</h1>
-      <p class="sub">Want a smaller video file that is easier to save or share? Paste a supported video link, choose an available quality and format, then prepare your MP4.</p>
+      <h1>Free Online Video Downloader and MP4 Compressor</h1>
+      <p class="sub">Use Lightclip to check a supported video link, choose an available quality, and prepare an MP4 file with H.264 or H.265 options. Availability depends on the source link and its restrictions.</p>
       <div class="hero-points" aria-label="Lightclip features"><span>Choose video quality</span><span>H.264 or H.265</span><span>Compact encoding option</span></div>
       <form class="row" id="link-form">
-        <input id="video-url" type="url" placeholder="Paste a supported video URL" aria-label="Video link" autocomplete="url" required>
-        <button id="check-button" type="submit">Try It Free</button>
+        <input id="video-url" type="url" placeholder="Paste a video link here…" aria-label="Video link" autocomplete="url" required>
+        <button id="check-button" type="submit">Check Link</button>
       </form>
+      <div class="url-tools" aria-label="Link input actions">
+        <button class="utility-btn" id="paste-button" type="button">Paste from clipboard</button>
+        <button class="utility-btn" id="clear-button" type="button">Clear link</button>
+      </div>
       <p class="hint">No account needed to try the tool. Only use videos you own or have permission to download.</p>
+      <section class="platform-panel" aria-labelledby="platform-title">
+        <h2 id="platform-title">Common video platforms</h2>
+        <p>Paste a link from a platform below to test whether it works with Lightclip.</p>
+        <div class="platform-list" aria-label="Examples of video platforms">
+          <span class="platform-chip">YouTube</span><span class="platform-chip">Facebook</span><span class="platform-chip">Instagram</span><span class="platform-chip">TikTok</span><span class="platform-chip">Vimeo</span>
+        </div>
+        <p class="notice">These are examples to try, not a guarantee of support. Availability depends on the specific link, access restrictions, current extractor compatibility, and your rights to save the content.</p>
+      </section>
       <div id="status-message" class="msg" role="status" aria-live="polite"></div>
       <section id="progress-panel" class="progress-panel" hidden aria-live="polite">
         <div class="progress-head"><strong id="progress-stage">Preparing download…</strong><strong id="progress-percent">0%</strong></div>
@@ -164,9 +229,43 @@
     <section id="faq" class="section">
       <h2>Frequently asked questions</h2>
       <details><summary>How can I make a video file smaller?</summary><p>Choose a lower available resolution, try H.265 if your device supports it, or enable Compact encoding. Smaller files can take longer to process, and compression may affect visual quality.</p></details>
+      <details><summary>Which video sites work with Lightclip?</summary><p>Compatibility depends on the specific link and the downloader backend. You can test links from common video platforms, but not every site, private post, livestream, or restricted video will work. We only recommend downloading content you own or have permission to save.</p></details>
+      <details><summary>Is a platform listed here guaranteed to work?</summary><p>No. Platform names are examples to try, not a guarantee of support. Site changes, login requirements, regional restrictions, and extractor updates can affect availability.</p></details>
       <details><summary>Why might a video link fail?</summary><p>Some links may be private, restricted, expired, or unsupported. Use a link you can access and have permission to save. Not every platform or video is guaranteed to work.</p></details>
       <details><summary>What is the difference between H.264 and H.265?</summary><p>H.264 is widely supported by devices and apps. H.265 can often deliver a smaller file at similar visual quality, but compatibility varies by device and software.</p></details>
       <details><summary>Can I download any video?</summary><p>No. Only download videos you own or have permission to save, and follow the source platform’s terms and applicable copyright laws.</p></details>
+    </section>
+
+
+    <section id="reviews" class="feedback-card" aria-labelledby="reviews-title">
+      <h2 id="reviews-title">Send Us a Review</h2>
+      <p class="section-copy">Nagamit mo na ang Lightclip? I-share ang experience mo. Ipapadala ang review mo direkta sa Lightclip team sa email; hindi ito ipo-post publicly sa website.</p>
+
+      <form id="review-form" class="feedback-form">
+        <h3 style="margin:12px 0 0">Write a review</h3>
+        <label for="review-name">Your name (optional)
+          <input id="review-name" name="name" maxlength="60" autocomplete="name" placeholder="Name or nickname">
+        </label>
+        <div>
+          <label id="rating-label">Your rating</label>
+          <div class="rating-picker" role="group" aria-labelledby="rating-label" aria-label="Choose a rating from one to five stars">
+            <button type="button" class="rating-star" data-rating="1" aria-label="1 star" aria-pressed="false">★</button>
+            <button type="button" class="rating-star" data-rating="2" aria-label="2 stars" aria-pressed="false">★</button>
+            <button type="button" class="rating-star" data-rating="3" aria-label="3 stars" aria-pressed="false">★</button>
+            <button type="button" class="rating-star" data-rating="4" aria-label="4 stars" aria-pressed="false">★</button>
+            <button type="button" class="rating-star" data-rating="5" aria-label="5 stars" aria-pressed="false">★</button>
+          </div>
+          <input id="review-rating" name="rating" type="hidden" value="5">
+        </div>
+        <label for="review-message">Your review
+          <textarea id="review-message" name="review" maxlength="1200" placeholder="What did you like? What could be improved?" required></textarea>
+        </label>
+        <input type="hidden" name="_subject" value="New Lightclip Website Review">
+        <input type="hidden" name="_template" value="table">
+        <button id="review-submit" type="submit">Send review</button>
+        <p class="feedback-note">Your review will be sent to the website owner by email and will not appear publicly. Please do not include passwords or other private information.</p>
+        <p id="review-submit-status" class="feedback-status" role="status" aria-live="polite"></p>
+      </form>
     </section>
 
     <section class="section" aria-labelledby="try-title">
@@ -178,7 +277,7 @@
 
   <footer><div class="foot-in">
     <p>Lightclip is an online video tool for preparing MP4 files. Only download videos you own or have permission to save, and follow each platform’s terms.</p>
-    <nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">Features</a><a href="#faq">FAQ</a></nav>
+    <nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">Features</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav>
   </div></footer>
 </div>
 
@@ -187,6 +286,56 @@
   "use strict";
 
   const $ = (id) => document.getElementById(id);
+
+  const reviewForm = $("review-form");
+  const reviewSubmit = $("review-submit");
+  const reviewSubmitStatus = $("review-submit-status");
+  const reviewRating = $("review-rating");
+  const ratingButtons = Array.from(document.querySelectorAll(".rating-star"));
+
+  function setRating(value) {
+    const rating = Math.max(1, Math.min(5, Number(value) || 5));
+    reviewRating.value = String(rating);
+    ratingButtons.forEach((button) => {
+      const selected = Number(button.dataset.rating) <= rating;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(Number(button.dataset.rating) === rating));
+    });
+  }
+  ratingButtons.forEach((button) => button.addEventListener("click", () => setRating(button.dataset.rating)));
+  setRating(5);
+
+  reviewForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!$("review-message").value.trim()) {
+      reviewSubmitStatus.textContent = "Please write your review first.";
+      return;
+    }
+    reviewSubmit.disabled = true;
+    reviewSubmit.textContent = "Sending…";
+    reviewSubmitStatus.textContent = "";
+    try {
+      const formData = new FormData(reviewForm);
+      const response = await fetch("https://formsubmit.co/ajax/ipgmtestdemo2025@gmail.com", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: formData
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success === "false") {
+        throw new Error(data.message || "Could not send your review right now. Please try again.");
+      }
+      reviewForm.reset();
+      setRating(5);
+      reviewSubmitStatus.textContent = "Thank you! Your review has been submitted by email.";
+    } catch (_) {
+      reviewSubmitStatus.textContent = "We couldn't send your review. Please check your internet connection and try again.";
+    } finally {
+      reviewSubmit.disabled = false;
+      reviewSubmit.textContent = "Send review";
+    }
+  });
+
   const form = $("link-form");
   const urlInput = $("video-url");
   const checkButton = $("check-button");
@@ -209,6 +358,38 @@
   const qualitySelect = $("quality-select");
   const codecSelect = $("codec-select");
   const compactOption = $("compact-option");
+  const pasteButton = $("paste-button");
+  const clearButton = $("clear-button");
+
+  pasteButton.addEventListener("click", async () => {
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        urlInput.focus();
+        showMessage("Clipboard access is unavailable here. Tap the link box and paste manually.", true);
+        return;
+      }
+      const text = (await navigator.clipboard.readText()).trim();
+      if (!text) {
+        showMessage("Your clipboard is empty. Copy a video link first.", true);
+        return;
+      }
+      urlInput.value = text;
+      urlInput.focus();
+      showMessage("Link pasted. Select Check Link when you’re ready.");
+    } catch (error) {
+      urlInput.focus();
+      showMessage("Clipboard permission was blocked. Tap the link box and paste manually.", true);
+    }
+  });
+
+  clearButton.addEventListener("click", () => {
+    urlInput.value = "";
+    urlInput.focus();
+    card.hidden = true;
+    errorDetail.hidden = true;
+    progressPanel.hidden = true;
+    showMessage("Link cleared.");
+  });
 
   let videoInfo = null;
   let currentStatus = "idle";
