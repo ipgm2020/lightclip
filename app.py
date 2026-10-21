@@ -13,6 +13,9 @@ import yt_dlp
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
+print(f"FFMPEG PATH: {FFMPEG_PATH}")
+
 app = Flask(__name__, static_folder=str(STATIC_DIR), static_url_path="")
 
 # Optional cookies support. Keep cookies.txt beside app.py, or set COOKIES_FILE.
@@ -62,6 +65,7 @@ def ydl_opts(extra=None):
         "no_warnings": True,
         "noplaylist": True,
         "socket_timeout": 30,
+        "ffmpeg_location": FFMPEG_PATH,
     }
 
     app.logger.warning("DENO PATH: %s", shutil.which("deno"))
@@ -292,7 +296,7 @@ def download():
                 ]
 
             command = [
-                "ffmpeg", "-y", "-i", source, "-vf", video_filter,
+                "FFMPEG_PATH", "-y", "-i", source, "-vf", video_filter,
                 *video_encoder, "-pix_fmt", "yuv420p",
                 "-c:a", "aac", "-b:a", "96k",
                 "-movflags", "+faststart", "-progress", "pipe:1", "-nostats", output,
